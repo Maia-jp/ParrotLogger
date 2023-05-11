@@ -5,6 +5,8 @@
 import Foundation
 
 extension ParrotLogger {
+    
+    /// The LogSeverity enumeration represents the severity level of log entries in ParrotLogger. It has seven cases for different levels of severity, from trace being the lowest to critical being the highest.
     public enum LogSeverity: String {
         case trace
         case debug
@@ -17,6 +19,9 @@ extension ParrotLogger {
 }
 
 extension ParrotLogger.LogSeverity: Equatable, Comparable {
+    
+    /// This function is an implementation of the Comparable protocol's < operator for ParrotLogger.LogSeverity enum.
+    /// - It returns a boolean value indicating whether the severity level represented by the left-hand side operand (lhs) is less than the severity level represented by the right-hand side operand (rhs). It compares the severity levels by converting them to integers using the asInt computed property and then comparing the integer values.
     public static func < (lhs: ParrotLogger.LogSeverity, rhs: ParrotLogger.LogSeverity) -> Bool {
         lhs.asInt < rhs.asInt
     }
