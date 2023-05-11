@@ -1,13 +1,10 @@
 //
-//  LogSeverity.swift
-//  EcoaStage
-//
-//  Created by João Pedro Monteiro Maia on 28/04/23.
+//  ParrotLogger
 //
 
 import Foundation
 
-extension LogHelper {
+extension ParrotLogger {
     public enum LogSeverity: String {
         case trace
         case debug
@@ -19,8 +16,8 @@ extension LogHelper {
     }
 }
 
-extension LogHelper.LogSeverity: Equatable, Comparable {
-    public static func < (lhs: LogHelper.LogSeverity, rhs: LogHelper.LogSeverity) -> Bool {
+extension ParrotLogger.LogSeverity: Equatable, Comparable {
+    public static func < (lhs: ParrotLogger.LogSeverity, rhs: ParrotLogger.LogSeverity) -> Bool {
         lhs.asInt < rhs.asInt
     }
     

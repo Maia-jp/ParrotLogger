@@ -1,14 +1,11 @@
 //
-//  StringInterpolation+Privacy.swift
-//  EcoaStage
-//
-//  Created by João Pedro Monteiro Maia on 28/04/23.
+//  ParrotLogger
 //
 
 import Foundation
 import os.log
 
-extension LogHelper {
+extension ParrotLogger {
     public enum LogPrivacyLevel {
         /// Always print
         case `public`
@@ -37,7 +34,7 @@ public struct PrivacyStringInterpolation: StringInterpolationProtocol {
         self.value.append(literal)
     }
     
-    public mutating func appendInterpolation(_ item: Any, privacy: LogHelper.LogPrivacyLevel = .public) {
+    public mutating func appendInterpolation(_ item: Any, privacy: ParrotLogger.LogPrivacyLevel = .public) {
         switch privacy {
         case .public:
             self.value.append(String(describing: item))
@@ -45,9 +42,6 @@ public struct PrivacyStringInterpolation: StringInterpolationProtocol {
             #if DEBUG
             self.value.append(String(describing: item))
             #else
-//            let protectedString = String(repeating: "*", count: string.rawString.count)
-//            self.value.append(protectedString.hashValue.description.prefix(max(8, string.rawString.count)).description)
-//            self.value.append(string.rawString.prefix(3).description)
             switch sensitivityConfiguration {
             case .showPrefix(let prefixSize):
                 let itemDescription = String(describing: item)
@@ -88,12 +82,3 @@ public struct LogString: ExpressibleByStringInterpolation {
         self.rawString = value
     }
 }
-////OSLogMessage.StringInterpolation
-//func b(_ s: LogString) {
-//    print(s.rawString)
-//}
-//let a = b("a \("x", privacy: .sensitive)")
-////let c = "a \("x", privacy: .sensitive)"
-//let loger = Logger(subsystem: "", category: "")
-//let z = loger.debug("\(10.0, format: .fixed(precision: 10))")
-////let zz = "\(10.0, format: .fixed(precision: 10))"

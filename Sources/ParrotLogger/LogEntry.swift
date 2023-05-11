@@ -1,17 +1,13 @@
 //
-//  LogEntry.swift
-//  EcoaStage
-//
-//  Created by Victor Martins on 01/05/23.
-//  Copyright © 2023 Ecoa Les PUC-Rio. All rights reserved.
+//  ParrotLogger
 //
 
 import Foundation
 
-extension LogHelper {
+extension ParrotLogger {
     public struct LogEntry {
         let date: Date
-        let logLevel: LogHelper.LogSeverity
+        let logLevel: ParrotLogger.LogSeverity
         let category: String
         let functionName: String
         let content: String
