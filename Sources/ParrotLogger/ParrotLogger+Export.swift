@@ -57,7 +57,7 @@ extension ParrotLogger {
     /// Saves an array of log entries to a text file and returns the URL of the saved file.
     ///
     /// - Parameters:
-    ///   - logs: An array of `LogHelper.LogEntry` objects representing the log entries to be saved.
+    ///   - logs: An array of `LogEntry` objects representing the log entries to be saved.
     ///   - appName: The name of the application associated with the log entries.
     /// - Returns: An optional `URL` pointing to the location of the saved text file, or `nil` if an error occurred.
     static func saveLogToTxt(_ logs: [LogEntry], appName: String) -> URL? {
