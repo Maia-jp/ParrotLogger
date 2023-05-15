@@ -40,7 +40,7 @@ extension ParrotLogger {
     ///   - fileType: A `LogFileType` enumeration value indicating the file format to use for saving the log entries.
     ///   - appName: The name of the application.
     /// - Returns: An optional `URL` pointing to the saved file if the operation is successful; `nil` otherwise.
-    static func saveLogEntries(_ logEntries: [LogEntry], to fileType: LogFileType, withAppName appName: String) -> URL? {
+    public static func saveLogEntries(_ logEntries: [LogEntry], to fileType: LogFileType, withAppName appName: String) -> URL? {
         switch fileType {
         case .txt:
             return saveLogToTxt(logEntries, appName: appName)
