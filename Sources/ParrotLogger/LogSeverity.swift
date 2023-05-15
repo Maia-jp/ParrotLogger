@@ -7,7 +7,7 @@ import Foundation
 extension ParrotLogger {
     
     /// The LogSeverity enumeration represents the severity level of log entries in ParrotLogger. It has seven cases for different levels of severity, from trace being the lowest to critical being the highest.
-    public enum LogSeverity: String {
+    public enum LogSeverity: String, Codable {
         case trace
         case debug
         case info
