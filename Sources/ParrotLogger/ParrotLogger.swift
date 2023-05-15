@@ -106,7 +106,13 @@ public class ParrotLogger: ObservableObject {
         let messageLogLevel = messageLogLevel ?? self.logLevel
         guard messageLogLevel >= self.logLevel else { return nil }
         
-        let logEntryTime = Date.now
+        let logEntryTime: Date
+        if #available(macOS 12, *) {
+            logEntryTime = Date.now
+        } else {
+            logEntryTime = Date()
+        }
+        
         let message = "\(self.dateFormatter.string(from: logEntryTime)) \(messageLogLevel.alignedDescription) [\(category)\(functionName.isEmpty ? "" : " ")\(functionName)] \(input)"
         
         print(message)
