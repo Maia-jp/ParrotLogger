@@ -12,7 +12,11 @@ ParrotLogger is a Swift logging framework designed to provide developers with a 
 
 ## Usage
 ### Basic Usage
-todo
+```swift
+let logger = ParrotLogger(category: "Login")
+
+logger.info("Info Message")
+```
 ### Setting log severity
 There are seven levels available. From less severe to more severe, they are:
 - `trace` – Appropriate for messages that contain information only when debugging a program.
@@ -40,8 +44,8 @@ todo
 
 ### External Observability
 
-The `LogHelper` class also implements enables external observers of new log entries.
+The `ParrotLogger` class also implements enables external observers of new log entries.
 
-A publisher called `newLogEntryPublisher` is a static property of the `LogHelper` class. It's a `PassthroughPublisher` and it's output is `Void`. That means that no entries are outputted by the publisher, just a signal that represents that “new entries are available”.
+A publisher called `newLogEntryPublisher` is a static property of the `ParrotLogger` class. It's a `PassthroughPublisher` and it's output is `Void`. That means that no entries are outputted by the publisher, just a signal that represents that “new entries are available”.
 
 An `Array` of all log entries on this session is also declared as static and is readable from anywhere. And a convenience computed property that represents the latest log entry was also implemented as static and is readable from anywhere.
