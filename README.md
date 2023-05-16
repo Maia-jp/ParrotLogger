@@ -39,6 +39,11 @@ Whether a given variable that is written on a log message shows up on the releas
     - The other way is by showing a prefix or suffix of some size. If the data gets truncated, an ellipsis (…) is shown at the appropriate position.
     - The other way is by showing the hash of the data. This enables us to hide the data itself while still being able to know if two log messages are referring to the same data, because if it's the same data, then the hash is going to be the same. The data is replaced by a text like “`<hash: 3298578276978312833>`”.
     - And one final way is by showing asteriscs. This keeps the number of characters of the original data, but hides it's content.
+```swift
+//Example
+logger.info("Secret: \(secretKey,privacy: .sensitive showHash))")
+```
+
 ### Logging to a file
 todo
 
