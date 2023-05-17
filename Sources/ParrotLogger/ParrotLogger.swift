@@ -18,7 +18,7 @@ public class ParrotLogger: ObservableObject {
     @MainActor static public var latestEntry: LogEntry? { sessionEntries.last }
     @MainActor static public private(set) var sessionEntries = [LogEntry]()
     
-    @MainActor static var newLogEntryPublisher = PassthroughSubject<Void, Never>()
+    @MainActor static public var newLogEntryPublisher = PassthroughSubject<Void, Never>()
     
     // MARK: - Initialization
     /// Initializes a new instance of ParrotLogger.
