@@ -8,11 +8,11 @@ extension ParrotLogger {
     /// This code defines a Swift struct called LogEntry. It represents a single log entry,
     public struct LogEntry: Identifiable, Codable, Equatable {
         public var id: UUID = UUID()
-        let date: Date
-        let logLevel: LogSeverity
-        let category: String
-        let functionName: String
-        let content: String
+        public let date: Date
+        public let logLevel: LogSeverity
+        public let category: String
+        public let functionName: String
+        public let content: String
 
         enum CodingKeys: String, CodingKey {
             case id
