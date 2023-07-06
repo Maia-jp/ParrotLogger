@@ -115,7 +115,9 @@ public class ParrotLogger: ObservableObject {
         
         let message = "\(self.dateFormatter.string(from: logEntryTime)) \(messageLogLevel.alignedDescription) [\(category)\(functionName.isEmpty ? "" : " ")\(functionName)] \(input)"
         
+        #if !DISABLE_LOG_PRINT
         print(message)
+        #endif
         
         self.objectWillChange.send()
         let newLogEntry = LogEntry(
