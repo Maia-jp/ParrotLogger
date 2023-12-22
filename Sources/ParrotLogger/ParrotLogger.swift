@@ -15,9 +15,9 @@ public class ParrotLogger: ObservableObject {
     public let category: String
     public let dateFormatter: DateFormatter
     
-    @MainActor static public var latestEntry: LogEntry? { sessionEntries.last }
-    @MainActor static public private(set) var sessionEntries = [LogEntry]()
+    static public private(set) var sessionEntries = [LogEntry]()
     
+    @MainActor static public var latestEntry: LogEntry? { sessionEntries.last }
     @MainActor static public var newLogEntryPublisher = PassthroughSubject<Void, Never>()
     
     // MARK: - Initialization

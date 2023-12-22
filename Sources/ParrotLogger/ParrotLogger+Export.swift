@@ -29,18 +29,18 @@ extension ParrotLogger {
         return dateFormatter.string(from: date)
     }
     
-    public enum LogFileType:CaseIterable {
+    public enum LogFileType: CaseIterable {
         case txt, csv, xml, json
     }
     
-    ///  Saves an array of log entries to a file with the specified file type.
+    /// Saves an array of log entries to a file with the specified file type.
     ///
     /// - Parameters:
-    ///   - logEntries: An array of `LogEntry` objects representing the log entries to be saved.
+    ///   - logEntries: An array of `LogEntry` objects representing the log entries to be saved. If not provided, the default log entries from the session will be used.
     ///   - fileType: A `LogFileType` enumeration value indicating the file format to use for saving the log entries.
     ///   - appName: The name of the application.
     /// - Returns: An optional `URL` pointing to the saved file if the operation is successful; `nil` otherwise.
-    public static func saveLogEntries(_ logEntries: [LogEntry], to fileType: LogFileType, withAppName appName: String) -> URL? {
+    public static func saveLogEntries(_ logEntries: [LogEntry] = sessionEntries, to fileType: LogFileType, withAppName appName: String) -> URL? {
         switch fileType {
         case .txt:
             return saveLogToTxt(logEntries, appName: appName)
