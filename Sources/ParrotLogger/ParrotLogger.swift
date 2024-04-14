@@ -5,20 +5,36 @@
 import Foundation
 import Combine
 
-
+public struct LoggerSeverityKey {
+    var k: String
+}
+public struct LoggerSeverityKeys {
+    static let `default` = LoggerSeverityKeys()
+}
+extension LoggerSeverityKeys {
+    var nice: LoggerSeverityKey { .init(k: "nice!")}
+}
 /// `ParrotLogger` is a logging utility class that provides a simple way to log messages with different log severities.
+//@dynamicMemberLookup
 public class ParrotLogger: ObservableObject {
-    
+//    public subscript<T>(dynamicMember keyPath: KeyPath<LoggerSeverityKeys, T>) -> (String, String, Int, Int, String) -> Void {
+//        get { return { (input: String, filename: String, line: Int, columns: Int, functionName: String) -> Void in print("call \()")} }
+//    }
     public static let generalLogLevel: LogSeverity = getGeneralLogLevel()
     public var logLevel: LogSeverity
     
     public let category: String
     public let dateFormatter: DateFormatter
+    public enum FunctionDescriptionMode {
+        case full, nameOnly, omitted
+    }
+    public let functionDescriptionMode: FunctionDescriptionMode
     
     static public private(set) var sessionEntries = [LogEntry]()
     
     @MainActor static public var latestEntry: LogEntry? { sessionEntries.last }
     @MainActor static public var newLogEntryPublisher = PassthroughSubject<Void, Never>()
+    
     
     // MARK: - Initialization
     /// Initializes a new instance of ParrotLogger.
@@ -29,9 +45,11 @@ public class ParrotLogger: ObservableObject {
     public init(
         logLevel: LogSeverity? = nil,
         category: String,
+        functionDescriptionMode: FunctionDescriptionMode = .full,
         dateFormatter: DateFormatter? = nil
     ) {
         self.category = category
+        self.functionDescriptionMode = functionDescriptionMode
         let logLevelForCategory = Self.getLogLevel(forCategory: category)
         if logLevel != nil && logLevelForCategory != nil {
             print("Log level specified on the \(category) LogHelper's initialization overriding the value from the environment variable.")
@@ -113,7 +131,21 @@ public class ParrotLogger: ObservableObject {
             logEntryTime = Date()
         }
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(messageLogLevel.alignedDescription) [\(category)\(functionName.isEmpty ? "" : " ")\(functionName)] \(input)"
+        let preparedFunctionName: String
+        switch functionDescriptionMode {
+        case .full:
+            preparedFunctionName = functionName
+        case .nameOnly:
+            if let functionName = functionName.split(separator: "(").first {
+                preparedFunctionName = String(functionName)
+            } else {
+                preparedFunctionName = ""
+            }
+        case .omitted:
+            preparedFunctionName = ""
+        }
+        
+        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(messageLogLevel.alignedDescription) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(input)"
         
         print(message)
         
@@ -459,4 +491,130 @@ extension ParrotLogger {
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
+    subscript(
+        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        filename: String = #fileID,
+        line: Int = #line,
+        column: Int = #column,
+        functionName: String = #function
+    ) -> (_ message: Any...) -> Void {
+        return { message in
+            self(severity, "\(message.map(String.init(describing:)).joined(separator: " "))", filename: filename, line: line, column: column, functionName: functionName)
+        }
+    }
+    
+    subscript(
+        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        filename: String = #fileID,
+        line: Int = #line,
+        column: Int = #column,
+        functionName: String = #function
+    ) -> (_ message: LogString) -> Void {
+        return { message in
+            self(severity, message, filename: filename, line: line, column: column, functionName: functionName)
+        }
+    }
+            
+    func callAsFunction(
+        filename: String = #fileID,
+        line: Int = #line,
+        column: Int = #column,
+        functionName: String = #function,
+        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ message: Any...
+        
+    ) {
+        self(severity, "\(message.map(String.init(describing:)).joined(separator: " "))", filename: filename, line: line, column: column, functionName: functionName)
+    }
+    func callAsFunction(
+        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ message: LogString,
+        filename: String = #fileID,
+        line: Int = #line,
+        column: Int = #column,
+        functionName: String = #function
+    ) {
+//        let messageLogLevel = messageLogLevel ?? self.logLevel
+//        guard messageLogLevel >= self.logLevel else { return nil }
+        
+        let logEntryTime: Date
+        if #available(macOS 12, *) {
+            logEntryTime = Date.now
+        } else {
+            logEntryTime = Date()
+        }
+        
+        let preparedFunctionName: String
+        switch functionDescriptionMode {
+        case .full:
+            preparedFunctionName = functionName
+        case .nameOnly:
+            if let functionName = functionName.split(separator: "(").first {
+                preparedFunctionName = String(functionName)
+            } else {
+                preparedFunctionName = ""
+            }
+        case .omitted:
+            preparedFunctionName = ""
+        }
+        
+        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(LogSeverityKeys.default[keyPath: severity].value) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
+        
+        print(message)
+//        switch severity {
+//        case .trace:
+//            self.trace(message)
+//        case .debug:
+//            self.debug(message)
+//        case .info:
+//            self.info(message)
+//        case .notice:
+//            self.notice(message)
+//        case .warning:
+//            self.warning(message)
+//        case .error:
+//            self.error(message)
+//        case .critical:
+//            self.critical(message, functionName: function)
+//            print(Mirror(reflecting: LogSeverityKeys.default).children.map {($0.label, $0.value)})
+//        }
+    }
+    
 }
+
+struct LogSeverityKeys {
+    static let `default` = LogSeverityKeys()
+}
+class LogSeverityKey {
+    var value: String
+    var moreSevereThan: KeyPath<LogSeverityKeys, LogSeverityKey>?
+    
+    init(_ name: String, _ emoji: String = " ", moreSevereThan: KeyPath<LogSeverityKeys, LogSeverityKey>?) {
+        self.value = "\(name) \(emoji)"
+        self.moreSevereThan = moreSevereThan
+    }
+}
+extension LogSeverityKeys {
+    var trace: LogSeverityKey    { .init("TRACE", moreSevereThan: nil) }
+    var debug: LogSeverityKey    { .init("DEBUG", moreSevereThan: \.trace) }
+    var info: LogSeverityKey     { .init("INFO", moreSevereThan: \.debug) }
+    var notice: LogSeverityKey   { .init("NOTICE", "⚪️", moreSevereThan: \.info) }
+    var warning: LogSeverityKey  { .init("WARNING", "🟡", moreSevereThan: \.notice) }
+    var error: LogSeverityKey    { .init("ERROR", "🔴", moreSevereThan: \.warning) }
+    var critical: LogSeverityKey { .init("CRITICAL", "⚫️", moreSevereThan: \.error) }
+}
+//struct LogSeverityKey: ExpressibleByStringLiteral {
+//    var value: String
+//    init(stringLiteral value: StringLiteralType) {
+//        self.value = value
+//    }
+//}
+//extension LogSeverityKeys {
+//    var trace: LogSeverityKey    { "   TRACE   " }
+//    var debug: LogSeverityKey    { "   DEBUG   " }
+//    var info: LogSeverityKey     { "    INFO   " }
+//    var notice: LogSeverityKey   { "  NOTICE ⚪️" }
+//    var warning: LogSeverityKey  { " WARNING 🟡" }
+//    var error: LogSeverityKey    { "   ERROR 🔴" }
+//    var critical: LogSeverityKey { "CRITICAL ⚫️" }
+//}
