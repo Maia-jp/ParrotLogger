@@ -20,6 +20,7 @@ final class ParrotLoggerTests: XCTestCase {
         logger(\.error, 1, 2, 3, 4)
         logger[\.trace]("warning")
         logger[\.nice]("nice message")
+        logger[\.navigation]("Calendar")
         let text = "abc"
         print("\(String(repeating: "0", count: max(0, 10 - text.count)))\(text)")
         print(1, 2)
@@ -27,5 +28,6 @@ final class ParrotLoggerTests: XCTestCase {
 }
 
 extension LogSeverity2 {
-    var nice: Key { Key("Nice", "/", moreSevereThan: \.debug) }
+    var nice: Key { Key(named: "Nice", marker: "/", moreSevereThan: \.debug) }
+    var navigation: Key { Key(named: "Navigation", marker: "🗺️", moreSevereThan: \.debug) }
 }

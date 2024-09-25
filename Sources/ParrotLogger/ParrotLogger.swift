@@ -171,13 +171,13 @@ public class ParrotLogger: ObservableObject {
 extension ParrotLogger.LogSeverity {
     fileprivate var alignedDescription: String {
         switch self {
-        case .trace:    return "   TRACE   "
-        case .debug:    return "   DEBUG   "
-        case .info:     return "    INFO   "
-        case .notice:   return "  NOTICE ⚪️"
-        case .warning:  return " WARNING 🟡"
-        case .error:    return "   ERROR 🔴"
-        case .critical: return "CRITICAL ⚫️"
+        case .trace:    return "     TRACE   "
+        case .debug:    return "     DEBUG   "
+        case .info:     return "      INFO   "
+        case .notice:   return "    NOTICE ⚪️"
+        case .warning:  return "   WARNING 🟡"
+        case .error:    return "     ERROR 🔴"
+        case .critical: return "  CRITICAL ⚫️"
         }
     }
 }
@@ -559,26 +559,9 @@ extension ParrotLogger {
         }
         let severityText = LogSeverity2.default[keyPath: severity].value
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(String(repeating: " ", count: max(0, 10 - severityText.count)))\(severityText) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
+        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(String(repeating: " ", count: max(0, 11 + LogSeverity2.default[keyPath: severity].emoji.count - severityText.count)))\(severityText) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
         
         print(message)
-//        switch severity {
-//        case .trace:
-//            self.trace(message)
-//        case .debug:
-//            self.debug(message)
-//        case .info:
-//            self.info(message)
-//        case .notice:
-//            self.notice(message)
-//        case .warning:
-//            self.warning(message)
-//        case .error:
-//            self.error(message)
-//        case .critical:
-//            self.critical(message, functionName: function)
-//            print(Mirror(reflecting: LogSeverityKeys.default).children.map {($0.label, $0.value)})
-//        }
     }
     
 }
@@ -588,22 +571,24 @@ struct LogSeverity2 {
     private init() {}
     class Key {
         var value: String
+        var emoji: String
         var moreSevereThan: KeyPath<LogSeverity2, Key>?
         
-        init(_ name: String, _ emoji: String = " ", moreSevereThan: KeyPath<LogSeverity2, Key>?) {
+        init(named name: String, marker emoji: String = "⚪️", moreSevereThan: KeyPath<LogSeverity2, Key>?) {
+            self.emoji = emoji
             self.value = "\(name) \(emoji)"
             self.moreSevereThan = moreSevereThan
         }
     }
 }
 extension LogSeverity2 {
-    var trace:    Key { Key("TRACE", moreSevereThan: nil) }
-    var debug:    Key { Key("DEBUG", moreSevereThan: \.trace) }
-    var info:     Key { Key("INFO", moreSevereThan: \.debug) }
-    var notice:   Key { Key("NOTICE", "⚪️", moreSevereThan: \.info) }
-    var warning:  Key { Key("WARNING", "🟡", moreSevereThan: \.notice) }
-    var error:    Key { Key("ERROR", "🔴", moreSevereThan: \.warning) }
-    var critical: Key { Key("CRITICAL", "⚫️", moreSevereThan: \.error) }
+    var trace:    Key { Key(named: "TRACE", moreSevereThan: nil) }
+    var debug:    Key { Key(named: "DEBUG", moreSevereThan: \.trace) }
+    var info:     Key { Key(named: "INFO", moreSevereThan: \.debug) }
+    var notice:   Key { Key(named: "NOTICE", marker: "⚪️", moreSevereThan: \.info) }
+    var warning:  Key { Key(named: "WARNING", marker: "🟡", moreSevereThan: \.notice) }
+    var error:    Key { Key(named: "ERROR", marker: "🔴", moreSevereThan: \.warning) }
+    var critical: Key { Key(named: "CRITICAL", marker: "⚫️", moreSevereThan: \.error) }
 }
 //struct LogSeverityKey: ExpressibleByStringLiteral {
 //    var value: String
