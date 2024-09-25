@@ -22,6 +22,7 @@ public class ParrotLogger: ObservableObject {
 //    }
     public static let generalLogLevel: LogSeverity = getGeneralLogLevel()
     public var logLevel: LogSeverity
+    public var overridenLogLevelName: String?
     
     public let category: String
     public let dateFormatter: DateFormatter
@@ -44,11 +45,15 @@ public class ParrotLogger: ObservableObject {
     ///   - dateFormatter: The date formatter used to format the timestamps in the log messages. If not provided, the logger will use the default date formatter.
     public init(
         logLevel: LogSeverity? = nil,
+        logLevelName: String? = nil,
         category: String,
         functionDescriptionMode: FunctionDescriptionMode = .full,
         dateFormatter: DateFormatter? = nil
     ) {
         self.category = category
+        if let logLevelName {
+            self.overridenLogLevelName = String(repeating: " ", count: 12 - logLevelName.count) + logLevelName
+        }
         self.functionDescriptionMode = functionDescriptionMode
         let logLevelForCategory = Self.getLogLevel(forCategory: category)
         if logLevel != nil && logLevelForCategory != nil {
@@ -145,7 +150,7 @@ public class ParrotLogger: ObservableObject {
             preparedFunctionName = ""
         }
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(messageLogLevel.alignedDescription) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(input)"
+        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(overridenLogLevelName ?? messageLogLevel.alignedDescription) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(input)"
         
         print(message)
         

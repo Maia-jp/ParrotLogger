@@ -21,6 +21,8 @@ final class ParrotLoggerTests: XCTestCase {
         logger[\.trace]("warning")
         logger[\.nice]("nice message")
         logger[\.navigation]("Calendar")
+        let pl1 = ParrotLogger(logLevelName: "teste 🐶", category: "a", functionDescriptionMode: .omitted)
+        pl1.info("testando")
         let text = "abc"
         print("\(String(repeating: "0", count: max(0, 10 - text.count)))\(text)")
         print(1, 2)
