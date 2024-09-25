@@ -492,7 +492,7 @@ extension ParrotLogger {
     }
     
     subscript(
-        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
@@ -504,7 +504,7 @@ extension ParrotLogger {
     }
     
     subscript(
-        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
@@ -520,14 +520,14 @@ extension ParrotLogger {
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function,
-        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         _ message: Any...
         
     ) {
         self(severity, "\(message.map(String.init(describing:)).joined(separator: " "))", filename: filename, line: line, column: column, functionName: functionName)
     }
     func callAsFunction(
-        _ severity: KeyPath<LogSeverityKeys, LogSeverityKey>,
+        _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         _ message: LogString,
         filename: String = #fileID,
         line: Int = #line,
@@ -557,8 +557,9 @@ extension ParrotLogger {
         case .omitted:
             preparedFunctionName = ""
         }
+        let severityText = LogSeverity2.default[keyPath: severity].value
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(LogSeverityKeys.default[keyPath: severity].value) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
+        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(String(repeating: " ", count: max(0, 10 - severityText.count)))\(severityText) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
         
         print(message)
 //        switch severity {
@@ -582,26 +583,27 @@ extension ParrotLogger {
     
 }
 
-struct LogSeverityKeys {
-    static let `default` = LogSeverityKeys()
-}
-class LogSeverityKey {
-    var value: String
-    var moreSevereThan: KeyPath<LogSeverityKeys, LogSeverityKey>?
-    
-    init(_ name: String, _ emoji: String = " ", moreSevereThan: KeyPath<LogSeverityKeys, LogSeverityKey>?) {
-        self.value = "\(name) \(emoji)"
-        self.moreSevereThan = moreSevereThan
+struct LogSeverity2 {
+    static let `default` = LogSeverity2()
+    private init() {}
+    class Key {
+        var value: String
+        var moreSevereThan: KeyPath<LogSeverity2, Key>?
+        
+        init(_ name: String, _ emoji: String = " ", moreSevereThan: KeyPath<LogSeverity2, Key>?) {
+            self.value = "\(name) \(emoji)"
+            self.moreSevereThan = moreSevereThan
+        }
     }
 }
-extension LogSeverityKeys {
-    var trace: LogSeverityKey    { .init("TRACE", moreSevereThan: nil) }
-    var debug: LogSeverityKey    { .init("DEBUG", moreSevereThan: \.trace) }
-    var info: LogSeverityKey     { .init("INFO", moreSevereThan: \.debug) }
-    var notice: LogSeverityKey   { .init("NOTICE", "⚪️", moreSevereThan: \.info) }
-    var warning: LogSeverityKey  { .init("WARNING", "🟡", moreSevereThan: \.notice) }
-    var error: LogSeverityKey    { .init("ERROR", "🔴", moreSevereThan: \.warning) }
-    var critical: LogSeverityKey { .init("CRITICAL", "⚫️", moreSevereThan: \.error) }
+extension LogSeverity2 {
+    var trace:    Key { Key("TRACE", moreSevereThan: nil) }
+    var debug:    Key { Key("DEBUG", moreSevereThan: \.trace) }
+    var info:     Key { Key("INFO", moreSevereThan: \.debug) }
+    var notice:   Key { Key("NOTICE", "⚪️", moreSevereThan: \.info) }
+    var warning:  Key { Key("WARNING", "🟡", moreSevereThan: \.notice) }
+    var error:    Key { Key("ERROR", "🔴", moreSevereThan: \.warning) }
+    var critical: Key { Key("CRITICAL", "⚫️", moreSevereThan: \.error) }
 }
 //struct LogSeverityKey: ExpressibleByStringLiteral {
 //    var value: String
