@@ -6,7 +6,7 @@ import Foundation
 
 extension ParrotLogger {
     /// This code defines a Swift struct called LogEntry. It represents a single log entry,
-    public struct LogEntry: Identifiable, Codable, Equatable {
+    public struct LogEntry: Sendable, Identifiable, Codable, Equatable {
         public var id: UUID = UUID()
         public let date: Date
         public let logLevel: LogSeverity

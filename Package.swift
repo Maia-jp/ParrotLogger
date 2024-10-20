@@ -1,11 +1,11 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "ParrotLogger",
-    platforms: [.iOS(.v15),.macOS(.v11),.tvOS(.v16),.watchOS(.v8)],
+    platforms: [.iOS(.v15),.macOS(.v14),.tvOS(.v16),.watchOS(.v8)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(

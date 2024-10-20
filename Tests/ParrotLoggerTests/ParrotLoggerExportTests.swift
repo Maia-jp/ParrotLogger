@@ -150,11 +150,11 @@ final class ParrotLoggerExportTests: XCTestCase {
         }
     }
     
-    func testSaveLogEntries() {
+    @MainActor func testSaveLogEntries() {
         let logs = ParrotLoggerExportTests.logs
         
         for fileType in ParrotLogger.LogFileType.allCases {
-            let url = ParrotLogger.saveLogEntries(logs, to: fileType, withAppName: "MyApp")
+            let url = ParrotLogger.saveLogEntries(to: fileType, withAppName: "MyApp")
             XCTAssertNotNil(url, "Failed to save log entries to file")
             guard let url else { return }
             XCTAssert(FileManager.default.fileExists(atPath: url.path), "Log saved as CSV")

@@ -8,7 +8,7 @@ import Combine
 public struct LoggerSeverityKey {
     var k: String
 }
-public struct LoggerSeverityKeys {
+public struct LoggerSeverityKeys: Sendable {
     static let `default` = LoggerSeverityKeys()
 }
 extension LoggerSeverityKeys {
@@ -16,22 +16,22 @@ extension LoggerSeverityKeys {
 }
 /// `ParrotLogger` is a logging utility class that provides a simple way to log messages with different log severities.
 //@dynamicMemberLookup
-public class ParrotLogger: ObservableObject {
+public final class ParrotLogger: Sendable, ObservableObject {
 //    public subscript<T>(dynamicMember keyPath: KeyPath<LoggerSeverityKeys, T>) -> (String, String, Int, Int, String) -> Void {
 //        get { return { (input: String, filename: String, line: Int, columns: Int, functionName: String) -> Void in print("call \()")} }
 //    }
     public static let generalLogLevel: LogSeverity = getGeneralLogLevel()
-    public var logLevel: LogSeverity
-    public var overridenLogLevelName: String?
+    public let logLevel: LogSeverity
+    public let overridenLogLevelName: String?
     
     public let category: String
-    public let dateFormatter: DateFormatter
-    public enum FunctionDescriptionMode {
+    public let dateFormatter: Date.FormatStyle
+    public enum FunctionDescriptionMode: Sendable {
         case full, nameOnly, omitted
     }
     public let functionDescriptionMode: FunctionDescriptionMode
     
-    static public private(set) var sessionEntries = [LogEntry]()
+    @MainActor static public private(set) var sessionEntries = [LogEntry]()
     
     @MainActor static public var latestEntry: LogEntry? { sessionEntries.last }
     @MainActor static public var newLogEntryPublisher = PassthroughSubject<Void, Never>()
@@ -48,11 +48,13 @@ public class ParrotLogger: ObservableObject {
         logLevelName: String? = nil,
         category: String,
         functionDescriptionMode: FunctionDescriptionMode = .full,
-        dateFormatter: DateFormatter? = nil
+        dateFormatter: Date.FormatStyle? = nil
     ) {
         self.category = category
         if let logLevelName {
             self.overridenLogLevelName = String(repeating: " ", count: 12 - logLevelName.count) + logLevelName
+        } else {
+            self.overridenLogLevelName = nil
         }
         self.functionDescriptionMode = functionDescriptionMode
         let logLevelForCategory = Self.getLogLevel(forCategory: category)
@@ -64,11 +66,12 @@ public class ParrotLogger: ObservableObject {
     }
     
     // MARK: - Static helper methods
-    private static var defaultDateformatter = {
-        let dtf = DateFormatter()
-        dtf.dateFormat = "HH:mm:ss.SS"
-        return dtf
-    }()
+    private static let defaultDateformatter = Date.FormatStyle()
+        .hour(.twoDigits(amPM: .omitted))
+        .minute(.twoDigits)
+        .second(.twoDigits)
+        .secondFraction(.fractional(3))
+        .locale(Locale(identifier: "en_US_POSIX"))
     
     /// This method retrieves the general log level from the environment variable LOG_LEVEL, and returns the corresponding LogSeverity enum case.
     /// If the environment variable is not set or contains an invalid value, the method returns the default log level .trace.
@@ -129,12 +132,7 @@ public class ParrotLogger: ObservableObject {
         let messageLogLevel = messageLogLevel ?? self.logLevel
         guard messageLogLevel >= self.logLevel else { return nil }
         
-        let logEntryTime: Date
-        if #available(macOS 12, *) {
-            logEntryTime = Date.now
-        } else {
-            logEntryTime = Date()
-        }
+        let logEntryTime: Date = Date()
         
         let preparedFunctionName: String
         switch functionDescriptionMode {
@@ -150,26 +148,30 @@ public class ParrotLogger: ObservableObject {
             preparedFunctionName = ""
         }
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(overridenLogLevelName ?? messageLogLevel.alignedDescription) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(input)"
+        let message = "\(logEntryTime.formatted(dateFormatter)) \(overridenLogLevelName ?? messageLogLevel.alignedDescription) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(input)"
         
         print(message)
         
-        self.objectWillChange.send()
-        let newLogEntry = LogEntry(
-            date: logEntryTime,
-            logLevel: messageLogLevel,
-            category: category,
-            functionName: functionName,
-            content: input
-        )
-        Task { @MainActor in
-            ParrotLogger.newLogEntryPublisher.send()
-            ParrotLogger.sessionEntries.append(newLogEntry)
+        Task(priority: .utility) {
+            let newLogEntry = LogEntry(
+                date: logEntryTime,
+                logLevel: messageLogLevel,
+                category: category,
+                functionName: functionName,
+                content: input
+            )
+            await self.appendToSharedHistory(newLogEntry)
         }
         
         return message
     }
     
+    @MainActor
+    private func appendToSharedHistory(_ newLogEntry: LogEntry) {
+        self.objectWillChange.send()
+        Self.sessionEntries.append(newLogEntry)
+        Self.newLogEntryPublisher.send()
+    }
     
 }
 
@@ -564,7 +566,7 @@ extension ParrotLogger {
         }
         let severityText = LogSeverity2.default[keyPath: severity].value
         
-        let message = "\(self.dateFormatter.string(from: logEntryTime)) \(String(repeating: " ", count: max(0, 11 + LogSeverity2.default[keyPath: severity].emoji.count - severityText.count)))\(severityText) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
+        let message = "\(logEntryTime.formatted(dateFormatter)) \(String(repeating: " ", count: max(0, 11 + LogSeverity2.default[keyPath: severity].emoji.count - severityText.count)))\(severityText) [\(category)\(preparedFunctionName.isEmpty ? "" : " ")\(preparedFunctionName)] \(message.rawString)"
         
         print(message)
     }

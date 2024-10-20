@@ -40,16 +40,17 @@ extension ParrotLogger {
     ///   - fileType: A `LogFileType` enumeration value indicating the file format to use for saving the log entries.
     ///   - appName: The name of the application.
     /// - Returns: An optional `URL` pointing to the saved file if the operation is successful; `nil` otherwise.
-    public static func saveLogEntries(_ logEntries: [LogEntry] = sessionEntries, to fileType: LogFileType, withAppName appName: String) -> URL? {
+    @MainActor
+    public static func saveLogEntries(to fileType: LogFileType, withAppName appName: String) -> URL? {
         switch fileType {
         case .txt:
-            return saveLogToTxt(logEntries, appName: appName)
+            return saveLogToTxt(self.sessionEntries, appName: appName)
         case .csv:
-            return saveLogToCSV(logEntries, appName: appName)
+            return saveLogToCSV(self.sessionEntries, appName: appName)
         case .xml:
-            return saveLogToXML(logEntries, appName: appName)
+            return saveLogToXML(self.sessionEntries, appName: appName)
         case .json:
-            return saveLogToJSON(logEntries, appName: appName)
+            return saveLogToJSON(self.sessionEntries, appName: appName)
         }
     }
 
