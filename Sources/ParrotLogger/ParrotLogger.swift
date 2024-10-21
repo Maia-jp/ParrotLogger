@@ -37,6 +37,32 @@ public final class ParrotLogger: Sendable, ObservableObject {
     @MainActor static public var newLogEntryPublisher = PassthroughSubject<Void, Never>()
     
     
+    
+    public struct Configuration {
+        var logLevel: LogSeverity? = nil
+        var logLevelName: String? = nil
+        var category: String
+        var functionDescriptionMode: FunctionDescriptionMode = .full
+        var dateFormatter: Date.FormatStyle? = nil
+        
+        public init(logLevel: LogSeverity? = nil, logLevelName: String? = nil, category: String, functionDescriptionMode: FunctionDescriptionMode = .full, dateFormatter: Date.FormatStyle? = nil) {
+            self.logLevel = logLevel
+            self.logLevelName = logLevelName
+            self.category = category
+            self.functionDescriptionMode = functionDescriptionMode
+            self.dateFormatter = dateFormatter
+        }
+    }
+    
+    public static subscript(configuration: Configuration) -> Self {
+        Self(
+            logLevel: configuration.logLevel,
+            logLevelName: configuration.logLevelName,
+            category: configuration.category,
+            functionDescriptionMode: configuration.functionDescriptionMode,
+            dateFormatter: configuration.dateFormatter
+        )
+    }
     // MARK: - Initialization
     /// Initializes a new instance of ParrotLogger.
     /// - Parameters:
@@ -498,7 +524,8 @@ extension ParrotLogger {
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
-    subscript(
+    
+    public subscript(
         _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         filename: String = #fileID,
         line: Int = #line,
@@ -510,7 +537,7 @@ extension ParrotLogger {
         }
     }
     
-    subscript(
+    public subscript(
         _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         filename: String = #fileID,
         line: Int = #line,
@@ -522,7 +549,7 @@ extension ParrotLogger {
         }
     }
             
-    func callAsFunction(
+    public func callAsFunction(
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
@@ -533,7 +560,8 @@ extension ParrotLogger {
     ) {
         self(severity, "\(message.map(String.init(describing:)).joined(separator: " "))", filename: filename, line: line, column: column, functionName: functionName)
     }
-    func callAsFunction(
+    
+    public func callAsFunction(
         _ severity: KeyPath<LogSeverity2, LogSeverity2.Key>,
         _ message: LogString,
         filename: String = #fileID,
@@ -573,10 +601,10 @@ extension ParrotLogger {
     
 }
 
-struct LogSeverity2 {
+public struct LogSeverity2: Sendable {
     static let `default` = LogSeverity2()
     private init() {}
-    class Key {
+    public class Key {
         var value: String
         var emoji: String
         var moreSevereThan: KeyPath<LogSeverity2, Key>?
@@ -588,7 +616,7 @@ struct LogSeverity2 {
         }
     }
 }
-extension LogSeverity2 {
+public extension LogSeverity2 {
     var trace:    Key { Key(named: "TRACE", moreSevereThan: nil) }
     var debug:    Key { Key(named: "DEBUG", moreSevereThan: \.trace) }
     var info:     Key { Key(named: "INFO", moreSevereThan: \.debug) }
