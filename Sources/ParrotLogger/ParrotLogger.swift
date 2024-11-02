@@ -9,6 +9,8 @@ import Combine
 public final class ParrotLogger: Sendable, ObservableObject {
     
     public static let generalLogLevel: LogSeverity = getGeneralLogLevel()
+    private static let environment = ProcessInfo.processInfo.environment
+    
     public let logLevel: LogSeverity
     public let overridenLogLevelName: String?
     
@@ -66,7 +68,7 @@ public final class ParrotLogger: Sendable, ObservableObject {
     /// - Returns: A LogSeverity enum case representing the general log level.
     private static func getGeneralLogLevel() -> LogSeverity {
         let generalLogLevelID = "LOG_LEVEL"
-        if let generalLogLevelVariable = ProcessInfo.processInfo.environment[generalLogLevelID] {
+        if let generalLogLevelVariable = Self.environment[generalLogLevelID] {
             if let generalLogLevel = LogSeverity(rawValue: generalLogLevelVariable.lowercased()) {
                 return generalLogLevel
             } else {
@@ -81,12 +83,9 @@ public final class ParrotLogger: Sendable, ObservableObject {
     /// - Parameter category: The category for which to retrieve the log severity level.
     /// - Returns: The log severity level for the given category or nil if no log severity level was found.
     private static func getLogLevel(forCategory category: String) -> LogSeverity? {
-        let env = ProcessInfo.processInfo.environment
+        let specificLogLevelVariable = Self.environment["LOG_LEVEL_\(category)".uppercased()] ?? Self.environment["\(category)_LOG_LEVEL".uppercased()]
         
-        let specificLogLevelIDPrefix = "LOG_LEVEL_\(category)".uppercased()
-        let specificLogLevelIDSuffix = "\(category)_LOG_LEVEL".uppercased()
-        
-        guard let specificLogLevelVariable = env[specificLogLevelIDPrefix] ?? env[specificLogLevelIDSuffix] else {
+        guard let specificLogLevelVariable else {
             return nil
         }
         
