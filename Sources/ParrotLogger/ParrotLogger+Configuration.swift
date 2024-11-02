@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension ParrotLogger {
+extension ParrotLogger {
     
     public struct Configuration: Sendable {
         var logLevel: LogSeverity? = nil

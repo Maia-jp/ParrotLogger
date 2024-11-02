@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Specific level log methods
-public extension ParrotLogger {
+extension ParrotLogger {
     /**
      Logs a trace message.
      
