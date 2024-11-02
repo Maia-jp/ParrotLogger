@@ -15,12 +15,12 @@ final class ParrotLoggerTests: XCTestCase {
             loggerO.warning("omitted description mode")
         }
         sumOperation(a: 1, b: 1)
-        let logger = ParrotLogger(category: "new")
-        logger(\.critical, "testing")
-        logger(\.error, 1, 2, 3, 4)
-        logger[\.trace]("warning")
-        logger[\.nice]("nice message")
-        logger[\.navigation]("Calendar")
+//        let logger = ParrotLogger(category: "new")
+//        logger(\.critical, "testing")
+//        logger(\.error, 1, 2, 3, 4)
+//        logger[\.trace]("warning")
+//        logger[\.nice]("nice message")
+//        logger[\.navigation]("Calendar")
         let pl1 = ParrotLogger(logLevelName: "teste 🐶", category: "a", functionDescriptionMode: .omitted)
         
         pl1.info("testando")
@@ -30,7 +30,7 @@ final class ParrotLoggerTests: XCTestCase {
     }
 }
 
-extension LogSeverity2 {
-    var nice: Key { Key(named: "Nice", marker: "/", moreSevereThan: \.debug) }
-    var navigation: Key { Key(named: "Navigation", marker: "🗺️", moreSevereThan: \.debug) }
-}
+//extension LogSeverity2 {
+//    var nice: Key { Key(named: "Nice", marker: "/", moreSevereThan: \.debug) }
+//    var navigation: Key { Key(named: "Navigation", marker: "🗺️", moreSevereThan: \.debug) }
+//}

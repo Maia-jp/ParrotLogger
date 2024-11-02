@@ -151,7 +151,7 @@ final class ParrotLoggerExportTests: XCTestCase {
     }
     
     @MainActor func testSaveLogEntries() {
-        let logs = ParrotLoggerExportTests.logs
+//        let logs = ParrotLoggerExportTests.logs
         
         for fileType in ParrotLogger.LogFileType.allCases {
             let url = ParrotLogger.saveLogEntries(to: fileType, withAppName: "MyApp")
