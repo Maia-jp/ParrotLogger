@@ -10,11 +10,11 @@ import Foundation
 extension ParrotLogger {
     
     public struct Configuration: Sendable {
-        var logLevel: LogSeverity? = nil
-        var logLevelName: String? = nil
-        var category: String
-        var functionDescriptionMode: FunctionDescriptionMode = .full
-        var dateFormatter: Date.FormatStyle? = nil
+        public var logLevel: LogSeverity? = nil
+        public var logLevelName: String? = nil
+        public var category: String
+        public var functionDescriptionMode: FunctionDescriptionMode = .full
+        public var dateFormatter: Date.FormatStyle? = nil
         
         public init(logLevel: LogSeverity? = nil, logLevelName: String? = nil, category: String, functionDescriptionMode: FunctionDescriptionMode = .full, dateFormatter: Date.FormatStyle? = nil) {
             self.logLevel = logLevel
