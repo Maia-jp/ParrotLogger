@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ParrotLogger+Convenience.swift
 //  ParrotLogger
 //
 //  Created by Victor Martins on 20/10/24.
@@ -21,12 +21,13 @@ extension ParrotLogger {
      */
     public func trace(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .trace,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .trace,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -42,12 +43,13 @@ extension ParrotLogger {
      */
     public func debug(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .debug,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .debug,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -63,12 +65,13 @@ extension ParrotLogger {
      */
     public func info(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .info,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .info,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -84,12 +87,13 @@ extension ParrotLogger {
      */
     public func notice(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .notice,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .notice,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -105,12 +109,13 @@ extension ParrotLogger {
      */
     public func warning(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .warning,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .warning,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -126,12 +131,13 @@ extension ParrotLogger {
      */
     public func error(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .error,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .error,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -147,12 +153,13 @@ extension ParrotLogger {
      */
     public func critical(
         _ message: LogString,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString, .critical,
+        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .critical,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -174,12 +181,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func trace(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .trace,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .trace,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -196,12 +204,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func debug(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .debug,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .debug,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -218,12 +227,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func info(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .info,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .info,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -240,12 +250,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func notice(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .notice,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .notice,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -262,12 +273,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func warning(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .warning,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .warning,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -284,12 +296,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func error(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .error,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .error,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
     
@@ -306,12 +319,13 @@ extension ParrotLogger {
     @_disfavoredOverload
     public func critical(
         _ item: Any,
+        _ startDate: Date? = nil,
         filename: String = #fileID,
         line: Int = #line,
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item), .critical,
+        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .critical,
                  filename: filename, line: line, columns: column, functionName: functionName)
     }
 }
