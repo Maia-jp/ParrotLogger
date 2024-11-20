@@ -27,8 +27,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .trace,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .trace, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -49,8 +49,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .debug,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .debug, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -71,8 +71,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .info,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .info, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -93,8 +93,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .notice,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .notice, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -115,8 +115,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .warning,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .warning, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -137,8 +137,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .error,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .error, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -159,8 +159,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(message.rawString + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .critical,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(message.rawString + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .critical, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
 }
@@ -187,8 +187,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .trace,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .trace, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -210,8 +210,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .debug,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .debug, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -233,8 +233,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .info,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .info, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -256,8 +256,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .notice,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .notice, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -279,8 +279,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .warning,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .warning, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -302,8 +302,8 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .error,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .error, filename: filename, line: line, columns: column, functionName: functionName)
     }
     
     /**
@@ -325,7 +325,7 @@ extension ParrotLogger {
         column: Int = #column,
         functionName: String = #function
     ) {
-        self.log(String(describing: item) + (startDate != nil ? Date.now.formattedTimeIntervalSince(startDate!) : ""), .critical,
-                 filename: filename, line: line, columns: column, functionName: functionName)
+        self.log(String(describing: item) + (startDate.flatMap { " (\(Date.now.formattedTimeIntervalSince($0)))" } ?? ""),
+                 .critical, filename: filename, line: line, columns: column, functionName: functionName)
     }
 }
